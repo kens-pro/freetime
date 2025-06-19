@@ -566,6 +566,7 @@
         <p>ほんの少しの勇気で、あなたの日常はもっと色鮮やかになります。<br>まずはお気軽に、あなたの想いをお聞かせください。</p>
         
         <div class="contact-form">
+            <!-- ★ここからフォームのHTML部分が変更・最適化されています★ -->
             <form name="contact_form" method="POST" data-netlify="true">
             <!-- 必須: Netlify Formsがフォームを識別するための隠しフィールド -->
             <input type="hidden" name="form-name" value="contact_form" />
@@ -594,6 +595,7 @@
             </div>
             <button type="submit" class="submit-button">無料で相談してみる</button>
           </form>
+            <!-- ★ここまでフォームのHTML部分が変更・最適化されています★ -->
         </div>
       </div>
     </div>
@@ -606,6 +608,7 @@
   </footer>
 
   <script>
+    // ★ここからJavaScriptのコード全体が変更・最適化されています★
     document.addEventListener('DOMContentLoaded', function() {
       // --- Header Scroll Effect ---
       const header = document.getElementById('site-header');
@@ -646,10 +649,20 @@
         faqItem.innerHTML = `<button class="faq-question">${item.q}</button><div class="faq-answer"><p>${item.a}</p></div>`;
         faqContainer.appendChild(faqItem);
       });
+      // FAQアイテムの生成後に、それらもobserverで監視する
+      document.querySelectorAll('.faq-item').forEach(el => observer.observe(el));
+
       document.querySelectorAll('.faq-question').forEach(question => {
         question.addEventListener('click', () => {
           const item = question.parentElement;
           const answer = item.querySelector('.faq-answer');
+          // 既に開いているFAQを閉じる処理
+          const currentlyActive = document.querySelector('.faq-item.active');
+          if (currentlyActive && currentlyActive !== item) {
+            currentlyActive.classList.remove('active');
+            currentlyActive.querySelector('.faq-answer').style.maxHeight = 0;
+          }
+          
           item.classList.toggle('active');
           if (item.classList.contains('active')) {
             answer.style.maxHeight = answer.scrollHeight + 'px';
@@ -658,7 +671,6 @@
           }
         });
       });
-      document.querySelectorAll('.faq-item').forEach(el => observer.observe(el));
 
       // --- Form & Plan Button Interaction ---
       document.querySelectorAll('.plan-button').forEach(button => {
@@ -671,12 +683,26 @@
           document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         });
       });
-      document.querySelector('form').addEventListener('submit', function(e) {
-        //  e.preventDefault(); // この行の前に//を追加
-        alert('お問い合わせありがとうございます！担当者より24時間以内にご返信いたします。');
-        this.reset();
-      });
-    });
+
+      // ★★★ ここからフォーム送信に関するJavaScriptの最適化部分です ★★★
+      // お問い合わせフォームの要素を、name属性を使って正確に取得する
+      // HTMLフォームの <form name="contact_form" ...> に対応
+      const contactForm = document.querySelector('form[name="contact_form"]');
+
+      if (contactForm) { // フォーム要素が存在する場合のみ処理を実行
+        contactForm.addEventListener('submit', function(e) {
+          // e.preventDefault(); は Netlify Formsが正常に動作するためにコメントアウトしたままにします。
+          // これにより、フォーム送信後にページがリロードされるか、Netlifyのデフォルトの「Success!」ページに遷移します。
+          // JavaScriptによるアラートやフォームリセットは、ページ遷移と競合するため、ここでは行いません。
+          // 成功メッセージはNetlifyのデフォルトページに任せるのが、最もシンプルで確実な方法です。
+          // alert('お問い合わせありがとうございます！担当者より24時間以内にご返信いたします。');
+          // this.reset(); 
+        });
+      }
+      // ★★★ フォーム送信に関するJavaScriptの最適化部分ここまで ★★★
+
+    }); // DOMContentLoaded
+    // ★JavaScriptのコード全体ここまで★
   </script>
 </body>
 </html>
