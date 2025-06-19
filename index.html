@@ -567,6 +567,10 @@
         
         <div class="contact-form">
           <form>
+           <form name="contact_form" method="POST" data-netlify="true">
+            <!-- 必須: Netlify Formsがフォームを識別するための隠しフィールド -->
+            <input type="hidden" name="form-name" value="contact_form" />
+            
             <div class="form-group">
               <label for="name">お名前 *</label>
               <input type="text" id="name" name="name" required placeholder="例：鳥居 はなこ">
